@@ -1,0 +1,17 @@
+apt update
+apt -y upgrade
+apt install -y vim apache2 php php-cli libapache2-mod-php php-curl php-mysql php-curl php-gd php-intl php-pear php-imap php-apcu php-pspell php-tidy php-xmlrpc php-mbstring php-gmp php-json php-xml php-ldap php-common php-snmp php-fpm
+apt install -y mariadb-server mariadb-client
+apt install -y git
+git clone --recursive https://github.com/phpipam/phpipam.git /var/www/html/phpipam
+cp /var/www/html/phpipam/config.dist.php /var/www/html/phpipam/config.php
+mv /etc/apache2/sites-enabled/000-default.conf /etc/apache2/sites-enabled/000-default.conf.bak
+echo '$allow_untested_php_versions=true;' >>  /var/www/html/phpipam/config.php
+chown -R www-data:www-data /var/www/html/
+a2enmod rewrite
+
+COPY phpipam.conf /etc/apache2/sites-enabled/phpipam.conf
+
+service mariadb start; service php8.2-fpm start; service apache2 start
+
+
